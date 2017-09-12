@@ -1,8 +1,6 @@
 # DigitalOcean Load Balancer Updater
 _Update Load Balancer based on Digital Ocean Droplets or Tags_
 
-_Keep your whitelisted ip address up to date in the digitalocean firewall_
-
 Designed for use with blue/green deployments, but not limited to this. 
 
 * Linux 32 and 64 bit
