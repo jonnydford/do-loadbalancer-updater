@@ -3,14 +3,14 @@ _Update Load Balancer based on Digital Ocean Droplets or Tags_
 
 Designed for use with blue/green deployments, but not limited to this. 
 
-* Linux 32 and 64 bit
-
 ## Build From Source
-Alternatively, if you have a Go environment configured, you can install the development version from the command line like so:
 
 ```
 $ go get github.com/jonnydford/do-loadbalancer-updater
 ```
+
+## Releases
+In the future I'll be releasing a precompiled binary for you to download. 
 
 ## Using DigitalOcean Load Balancer Updater
 
