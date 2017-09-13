@@ -1,4 +1,4 @@
-package main
+package dolbupdater
 
 import (
 	"context"
@@ -59,7 +59,7 @@ func findLoadBalancerByID(client *godo.Client, lbID string) (loadbalancer *godo.
 	return
 }
 
-func updateLoadBalancer(client *godo.Client, lbID string, lb *godo.LoadBalancerRequest) (err error) {
+func updateLoadBalancer(client *godo.Client, lbID string, lb *godo.LoadBalancerRequest, err error) {
 	ctx := context.TODO()
 
 	_, _, err = client.LoadBalancers.Update(ctx, lbID, lb)

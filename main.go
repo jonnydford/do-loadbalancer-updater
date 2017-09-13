@@ -1,15 +1,22 @@
-package main
+package dolbupdater
 
 import (
+	"flag"
 	"github.com/digitalocean/godo"
 	"log"
-    "flag"
-    "os"
+	"os"
 )
 
 func main() {
 	var apiToken, loadbalancerName, loadbalancerID, dropletTag, dropletIDs string
-    var err error
+	var err error
+
+	/// We get all of these from your environment variables if you so choose to set them
+	os.Getenv("apiToken")
+	os.Getenv("loadbalancerName")
+	os.Getenv("loadbalancerID")
+	os.Getenv("dropletTag")
+	os.Getenv("dropletIDs")
 
 	flag.StringVar(&apiToken, "token", "", "The digitalocean api token, can also export apiToken")
 	flag.StringVar(&loadbalancerName, "loadbalancer-name", "", "The name of the loadbalancer")
@@ -18,13 +25,6 @@ func main() {
 	flag.StringVar(&dropletIDs, "dropletIDs", "", "The droplet ID for the load balancer")
 
 	flag.Parse()
-
-/// We get all of these from your environment variables if you so choose to set them
-    os.Getenv("apiToken")
-    os.Getenv("loadbalancerName")
-    os.Getenv("loadbalancerID")
-    os.Getenv("dropletTag")
-    os.Getenv("dropletIDs")
 
 	if apiToken == "" {
 		log.Fatal("You must specify the --token")
@@ -44,11 +44,11 @@ func main() {
 
 	client := newClient(apiToken)
 
-	var loadbalancer *godo.LoadBalancer
+	var LoadBalancer *godo.LoadBalancer
 	if loadbalancerID != "" {
-		loadbalancer, err = findLoadBalancerByID(client, loadbalancerID)
+		LoadBalancer, err = findLoadBalancerByID(client, loadbalancerID)
 	} else {
-		loadbalancer, err = findLoadBalancerByName(client, loadbalancerName)
+		LoadBalancer, err = findLoadBalancerByName(client, loadbalancerName)
 	}
 
 	if err != nil {
@@ -58,7 +58,6 @@ func main() {
 	lb := &godo.LoadBalancerRequest{
 		Name:                LoadBalancer.Name,
 		Algorithm:           LoadBalancer.Algorithm,
-		Region:              LoadBalancer.Region,
 		ForwardingRules:     LoadBalancer.ForwardingRules,
 		HealthCheck:         LoadBalancer.HealthCheck,
 		StickySessions:      LoadBalancer.StickySessions,
@@ -67,7 +66,7 @@ func main() {
 		RedirectHttpToHttps: LoadBalancer.RedirectHttpToHttps,
 	}
 
-	err = updateLoadBalancer(client, loadbalancerID, lb)
+	updateLoadBalancer(client, loadbalancerID, lb, err)
 	if err != nil {
 		log.Fatal(err)
 	}
