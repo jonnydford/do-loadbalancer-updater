@@ -1,14 +1,16 @@
-package dolbupdater
+package main
 
 import (
 	"flag"
-	"github.com/digitalocean/godo"
 	"log"
 	"os"
+	"strings"
+
+	"github.com/digitalocean/godo"
 )
 
 func main() {
-	var apiToken, loadbalancerName, loadbalancerID, dropletTag, dropletIDs string
+	var apiToken, loadbalancerName, loadbalancerID, dropletTag, region string
 	var err error
 
 	/// We get all of these from your environment variables if you so choose to set them
@@ -17,12 +19,13 @@ func main() {
 	os.Getenv("loadbalancerID")
 	os.Getenv("dropletTag")
 	os.Getenv("dropletIDs")
+	os.Getenv("region")
 
 	flag.StringVar(&apiToken, "token", "", "The digitalocean api token, can also export apiToken")
 	flag.StringVar(&loadbalancerName, "loadbalancer-name", "", "The name of the loadbalancer")
 	flag.StringVar(&loadbalancerID, "loadbalancer-id", "", "The id of the loadbalancer")
 	flag.StringVar(&dropletTag, "droplet-tag", "", "The droplet tag name for the loadbalancer")
-	flag.StringVar(&dropletIDs, "dropletIDs", "", "The droplet ID for the load balancer")
+	flag.StringVar(&region, "region", "", "Region name, such as ams2")
 
 	flag.Parse()
 
@@ -34,12 +37,8 @@ func main() {
 		log.Fatal("You must specify the --loadbalancer-name or the --loadbalancer-id")
 	}
 
-	if dropletTag == "" && dropletIDs == "" {
-		log.Fatal("You must specify the --droplet-tag or the --dropletIDs")
-	}
-
-	if dropletTag != "" && dropletIDs != "" {
-		log.Fatal("Just specify one of --droplet-tag or --dropletIDs")
+	if dropletTag == "" {
+		log.Fatal("You must specify the --droplet-tag")
 	}
 
 	client := newClient(apiToken)
@@ -61,15 +60,14 @@ func main() {
 		ForwardingRules:     LoadBalancer.ForwardingRules,
 		HealthCheck:         LoadBalancer.HealthCheck,
 		StickySessions:      LoadBalancer.StickySessions,
-		DropletIDs:          LoadBalancer.DropletIDs,
 		Tag:                 LoadBalancer.Tag,
 		RedirectHttpToHttps: LoadBalancer.RedirectHttpToHttps,
 	}
 
-	updateLoadBalancer(client, loadbalancerID, lb, err)
-	if err != nil {
-		log.Fatal(err)
-	}
+	lb.Region = strings.ToLower(region)
+	lb.Tag = dropletTag
+
+	updateLoadBalancer(client, LoadBalancer.ID, lb, err)
 
 	log.Println("Load Balancer updated successfully.")
 }

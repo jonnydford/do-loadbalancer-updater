@@ -15,7 +15,7 @@ In the future I'll be releasing a precompiled binary for you to download.
 ## Using DigitalOcean Load Balancer Updater
 
 ```
-/path/to/executable --token DIGITALOCEAN_API_TOKEN --loadbalancer-id LOADBALANCER_ID
+/path/to/executable --token DIGITALOCEAN_API_TOKEN --loadbalancer-id LOADBALANCER_ID --droplet-tag TAGNAME --region AMS2
 ```
 
 Your API token must have read and write privileges.
@@ -23,6 +23,6 @@ Your API token must have read and write privileges.
 ## Variables
 ``--token``
 ``--loadbalancer-id`` or ``--loadbalancer-name``
-``--droplet-tag`` or ``--dropletIDs``
+``--droplet-tag``
 
 All of the variables can also be set in your environment path, useful especially for the API token.

@@ -1,11 +1,14 @@
-package dolbupdater
+package main
 
 import (
 	"context"
 	"errors"
+	"fmt"
+	"log"
+	"strings"
+
 	"github.com/digitalocean/godo"
 	"golang.org/x/oauth2"
-	"strings"
 )
 
 type tokenSource struct {
@@ -63,5 +66,10 @@ func updateLoadBalancer(client *godo.Client, lbID string, lb *godo.LoadBalancerR
 	ctx := context.TODO()
 
 	_, _, err = client.LoadBalancers.Update(ctx, lbID, lb)
+	if err != nil {
+
+		fmt.Println("Load Balancer Update Failed")
+		log.Fatal(err)
+	}
 	return
 }
